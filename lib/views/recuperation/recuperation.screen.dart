@@ -12,6 +12,8 @@ class RecuperationScreen extends StatefulWidget {
 }
 
 class _RecuperationScreenState extends State<RecuperationScreen> {
+  bool isLoading = false;
+  
   @override
   Widget build(BuildContext context) {
     return Container(

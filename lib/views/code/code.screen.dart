@@ -20,6 +20,7 @@ class CodeScreen extends StatefulWidget {
 
 class _CodeScreenState extends State<CodeScreen> {
   final _codeController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -111,10 +112,14 @@ class _CodeScreenState extends State<CodeScreen> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
-                        child: const Text(
-                          'Soumettre',
-                          style: TextStyle(fontSize: 20.0),
-                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                'Soumettre',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -147,21 +152,18 @@ class _CodeScreenState extends State<CodeScreen> {
 
   Future<void> checkCode() async {
     if (_codeController.text.isNotEmpty) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
+      setState(() {
+        isLoading = true;
+      });
 
       var response = await http.get(
         Uri.parse(
             "http://backend.cible-app.com/public/api/emailbycode/${_codeController.text}"),
       );
 
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
+      setState(() {
+        isLoading = false;
+      });
 
       if (response.statusCode == 200) {
         final Map body = json.decode(response.body);

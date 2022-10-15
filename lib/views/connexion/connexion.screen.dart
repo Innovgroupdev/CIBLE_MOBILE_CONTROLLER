@@ -22,6 +22,7 @@ class ConnexionScreen extends StatefulWidget {
 class _ConnexionScreenState extends State<ConnexionScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -129,10 +130,14 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
-                        child: const Text(
-                          'Se Connecter',
-                          style: TextStyle(fontSize: 20.0),
-                        ),
+                        child: isLoading
+                            ? CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                'Se Connecter',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -166,13 +171,9 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
   Future<void> login() async {
     if (_passwordController.text.isNotEmpty &&
         _emailController.text.isNotEmpty) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
+      setState(() {
+        isLoading = true;
+      });
 
       var response = await http.post(
         Uri.parse(
@@ -182,8 +183,10 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
           'password': _passwordController.text
         }),
       );
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
+
+      setState(() {
+        isLoading = false;
+      });
 
       if (response.statusCode == 200) {
         final Map body = json.decode(response.body);

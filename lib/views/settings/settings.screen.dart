@@ -76,13 +76,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text(
-              'Déconnexion',
-              style: TextStyle(fontSize: 20),
+            title: const Icon(
+              Icons.warning,
+              color: Colors.red,
+              size: 50,
             ),
             content: const Text(
               'Êtes-vous sûr?',
-              style: TextStyle(fontSize: 15),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             actions: [
               MaterialButton(

@@ -15,6 +15,7 @@ class InscriptionScreen extends StatefulWidget {
 
 class _InscriptionScreenState extends State<InscriptionScreen> {
   final _passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                           color: AppColor.text),
                     ),
                     const SizedBox(
-                    height: 20.0,
+                      height: 20.0,
                     ),
                     Text(
                       widget.email,
@@ -95,10 +96,14 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
-                        child: const Text(
-                          'S\'inscrire',
-                          style: TextStyle(fontSize: 20.0),
-                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                'S\'inscrire',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
                       ),
                     ),
                   ],
@@ -114,21 +119,18 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
   Future<void> inscription() async {
     if (_passwordController.text.isNotEmpty) {
       if (_passwordController.text.length >= 8) {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            });
+        setState(() {
+          isLoading = true;
+        });
 
         var response = await http.post(
           Uri.parse(
               "http://backend.cible-app.com/public/api/controllers/updatepassword/${widget.email}/${_passwordController.text}"),
         );
 
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pop();
+        setState(() {
+          isLoading = false;
+        });
         if (response.statusCode == 200) {
           // ignore: use_build_context_synchronously
           Navigator.of(context).pushReplacement(

@@ -33,15 +33,70 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          buildQrView(context),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            buildQrView(context),
+            Positioned(bottom: 10, child: buildResult()),
+            Positioned(bottom: 150, child: buildControlButton()),
+          ],
+        ),
       ),
     );
   }
+
+  Widget buildControlButton() => Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.white24,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: FutureBuilder(
+                  future: controller?.getFlashStatus(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Icon(
+                          snapshot.data! ? Icons.flash_on : Icons.flash_off);
+                    } else {
+                      return Container();
+                    }
+                  }),
+              onPressed: () async {
+                await controller?.toggleFlash();
+                setState(() {});
+              },
+            ),
+            // IconButton(
+            //   icon: FutureBuilder(
+            //       future: controller?.getCameraInfo(),
+            //       builder: (context, snapshot) {
+            //         if (snapshot.hasData) {
+            //           return const Icon(Icons.switch_camera);
+            //         } else {
+            //           return Container();
+            //         }
+            //       }),
+            //   onPressed: () async {
+            //     await controller?.flipCamera();
+            //     setState(() {});
+            //   },
+            // ),
+          ],
+        ),
+      );
+
+  Widget buildResult() => Text(
+        barcode != null ? 'Result : ${barcode!.code}' : 'Scan a code',
+        maxLines: 3,
+      );
 
   Widget buildQrView(BuildContext context) => QRView(
         key: qrKey,
