@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:cible_controlleur/constants/local_path.dart';
 import 'package:cible_controlleur/helpers/colorsHelpers.dart';
 import 'package:cible_controlleur/helpers/sharedPreferences.dart';
+import 'package:cible_controlleur/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
+import 'package:provider/provider.dart';
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key});
@@ -23,9 +25,10 @@ class ProfileInfo extends StatelessWidget {
                   'https://img.icons8.com/ios-glyphs/90/013d1b/qr-code--v1.png'),
             )),
         Visibility(
-          visible: SharedPreferencesHelper.getNom() != null,
+          visible: SharedPreferencesHelper.getNom() != null &&
+              SharedPreferencesHelper.getPrenoms() != null,
           child: Text(
-            '${SharedPreferencesHelper.getNom()} ${SharedPreferencesHelper.getPrenoms()}',
+            '${Provider.of<UserProvider>(context).nom} ${Provider.of<UserProvider>(context).prenoms}',
             style: const TextStyle(
               color: AppColor.primary,
               fontSize: 15,
@@ -33,9 +36,9 @@ class ProfileInfo extends StatelessWidget {
           ),
         ),
         Visibility(
-          visible: SharedPreferencesHelper.getPrenoms() != null,
+          visible: SharedPreferencesHelper.getEmail() != null,
           child: Text(
-            SharedPreferencesHelper.getEmail() ?? '',
+            Provider.of<UserProvider>(context).email,
             style: const TextStyle(
               color: AppColor.primary,
               fontSize: 15,

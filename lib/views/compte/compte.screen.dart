@@ -1,7 +1,9 @@
 import 'package:cible_controlleur/helpers/colorsHelpers.dart';
 import 'package:cible_controlleur/helpers/sharedPreferences.dart';
+import 'package:cible_controlleur/providers/user_provider.dart';
 import 'package:cible_controlleur/views/settings/settings.widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CompteScreen extends StatefulWidget {
   const CompteScreen({Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class CompteScreen extends StatefulWidget {
 class _CompteScreenState extends State<CompteScreen> {
   final _nomController = TextEditingController();
   final _prenomsController = TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
@@ -128,5 +130,13 @@ class _CompteScreenState extends State<CompteScreen> {
   Future update() async {
     await SharedPreferencesHelper.setNom(_nomController.text);
     await SharedPreferencesHelper.setPrenoms(_prenomsController.text);
+
+    // ignore: use_build_context_synchronously
+    Provider.of<UserProvider>(context, listen: false)
+        .setNom(SharedPreferencesHelper.getNom() ?? '');
+
+    // ignore: use_build_context_synchronously
+    Provider.of<UserProvider>(context, listen: false)
+        .setPrenoms(SharedPreferencesHelper.getPrenoms() ?? '');
   }
 }

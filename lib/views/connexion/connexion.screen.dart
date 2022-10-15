@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cible_controlleur/helpers/sharedPreferences.dart';
+import 'package:cible_controlleur/providers/user_provider.dart';
 import 'package:cible_controlleur/views/events/events.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import 'package:cible_controlleur/constants/local_path.dart';
 import 'package:cible_controlleur/helpers/colorsHelpers.dart';
 import 'package:cible_controlleur/views/recuperation/recuperation.screen.dart';
 import 'package:cible_controlleur/widgets/background.dart';
+import 'package:provider/provider.dart';
 
 class ConnexionScreen extends StatefulWidget {
   const ConnexionScreen({super.key});
@@ -189,6 +191,16 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
         await SharedPreferencesHelper.setEmail(_emailController.text);
         await SharedPreferencesHelper.setPassword(_passwordController.text);
         await SharedPreferencesHelper.setToken(body['access_token']);
+
+        // ignore: use_build_context_synchronously
+        Provider.of<UserProvider>(context, listen: false)
+            .setEmail(SharedPreferencesHelper.getEmail() ?? '');
+        // ignore: use_build_context_synchronously
+        Provider.of<UserProvider>(context, listen: false)
+            .setPassword(SharedPreferencesHelper.getPassword() ?? '');
+        // ignore: use_build_context_synchronously
+        Provider.of<UserProvider>(context, listen: false)
+            .setToken(SharedPreferencesHelper.getToken() ?? '');
 
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
