@@ -177,12 +177,14 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
 
       var response = await http.post(
         Uri.parse(
-            "http://backend.cible-app.com/public/api/auth/controlleur/login"),
+            "http://backend.cible-app.com/public/api/auth/controllers/login"),
         body: ({
           'email': _emailController.text,
           'password': _passwordController.text
         }),
       );
+
+      print(SharedPreferencesHelper.getToken());
 
       setState(() {
         isLoading = false;
@@ -212,6 +214,7 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
           }),
         );
       } else {
+        print(response.body);
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Email ou mot de passe incorrect")),
@@ -219,7 +222,7 @@ class _ConnexionScreenState extends State<ConnexionScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Remplir les champs")),
+        const SnackBar(content: Text("Remplissez les champs")),
       );
     }
   }

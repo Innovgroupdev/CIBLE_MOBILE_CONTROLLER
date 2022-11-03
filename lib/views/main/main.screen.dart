@@ -8,9 +8,10 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SharedPreferencesHelper.getToken() != ''
-            ? const EventsScreen()
-            : const WelcomeScreen());
+    return const Scaffold(
+        // body: SharedPreferencesHelper.getToken() != ''
+        //     ? const EventsScreen()
+        //     : const WelcomeScreen());
+        body: WelcomeScreen());
   }
 }

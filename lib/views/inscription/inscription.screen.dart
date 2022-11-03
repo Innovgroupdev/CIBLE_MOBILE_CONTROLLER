@@ -123,9 +123,15 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
           isLoading = true;
         });
 
+        Map<String, String> body = {
+          'email': widget.email,
+          'password': _passwordController.text
+        };
+
         var response = await http.post(
           Uri.parse(
-              "http://backend.cible-app.com/public/api/controllers/updatepassword/${widget.email}/${_passwordController.text}"),
+              "http://backend.cible-app.com/public/api/updatepassword/control"),
+          body: body,
         );
 
         setState(() {
@@ -139,16 +145,19 @@ class _InscriptionScreenState extends State<InscriptionScreen> {
             }),
           );
         } else {
-          // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Il faut au moins 8 caractères")),
-          );
+          print(response.body);
+          print("here");
         }
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Remplir les champs")),
+          const SnackBar(content: Text("Il faut au moins 8 caractères")),
         );
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Remplissez les champs")),
+      );
     }
   }
 }

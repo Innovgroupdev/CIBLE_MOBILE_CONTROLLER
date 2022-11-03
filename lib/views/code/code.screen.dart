@@ -11,6 +11,8 @@ import 'package:cible_controlleur/views/inscription/inscription.screen.dart';
 import 'package:cible_controlleur/views/welcome/welcome.screen.dart';
 import 'package:cible_controlleur/widgets/background.dart';
 
+import '../scan/scan.screen.dart';
+
 class CodeScreen extends StatefulWidget {
   const CodeScreen({super.key});
 
@@ -170,7 +172,8 @@ class _CodeScreenState extends State<CodeScreen> {
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (BuildContext context) {
-            return InscriptionScreen(email: body['data']);
+            return const ScanScreen();
+            // return InscriptionScreen(email: body['data']);
           }),
         );
       } else {

@@ -1,5 +1,6 @@
 import 'package:cible_controlleur/views/compte/compte.screen.dart';
 import 'package:cible_controlleur/views/connexion/connexion.screen.dart';
+import 'package:cible_controlleur/views/main/main.screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -111,22 +112,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       });
                   var response = await http.post(
                     Uri.parse(
-                        "http://backend.cible-app.com/public/api/controlleur/logout"),
+                        "http://backend.cible-app.com/public/api/controllers/logout"),
                     headers: ({
                       'Authorization':
                           'Bearer ${SharedPreferencesHelper.getToken()}',
                     }),
                   );
-
+                  print(SharedPreferencesHelper.getToken());
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const ConnexionScreen()),
-                      (route) => false);
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => const MainScreen()),
+                    (route) => false,
+                  );
 
                   if (response.statusCode == 200) {
-                    await SharedPreferencesHelper.setToken('');
+                    print(SharedPreferencesHelper.getToken());
                   } else {
+                    print("here");
+                    await SharedPreferencesHelper.setToken('');
                     print(response.body);
                   }
                 },

@@ -39,7 +39,7 @@ class _ScanScreenState extends State<ScanScreen> {
           alignment: Alignment.center,
           children: [
             buildQrView(context),
-            Positioned(bottom: 10, child: buildResult()),
+            Positioned(bottom: 50, child: buildResult()),
             Positioned(bottom: 150, child: buildControlButton()),
           ],
         ),
@@ -74,29 +74,34 @@ class _ScanScreenState extends State<ScanScreen> {
                 setState(() {});
               },
             ),
-            // IconButton(
-            //   icon: FutureBuilder(
-            //       future: controller?.getCameraInfo(),
-            //       builder: (context, snapshot) {
-            //         if (snapshot.hasData) {
-            //           return const Icon(Icons.switch_camera);
-            //         } else {
-            //           return Container();
-            //         }
-            //       }),
-            //   onPressed: () async {
-            //     await controller?.flipCamera();
-            //     setState(() {});
-            //   },
-            // ),
           ],
         ),
       );
 
-  Widget buildResult() => Text(
-        barcode != null ? 'Result : ${barcode!.code}' : 'Scan a code',
-        maxLines: 3,
+  Widget buildResult() {
+    if (barcode != null) {
+      return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: SizedBox(
+          width: double.maxFinite / 2,
+          height: double.maxFinite / 2,
+          child: Column(
+            children: [
+              Text(
+                barcode!.code == "https://boxicons.com/usage"
+                    ? 'Valide'
+                    : 'Invalid',
+              )
+            ],
+          ),
+        ),
       );
+    } else {
+      return const SizedBox();
+    }
+  }
 
   Widget buildQrView(BuildContext context) => QRView(
         key: qrKey,
