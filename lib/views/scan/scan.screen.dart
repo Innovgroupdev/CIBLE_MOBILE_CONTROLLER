@@ -39,7 +39,9 @@ class _ScanScreenState extends State<ScanScreen> {
           alignment: Alignment.center,
           children: [
             buildQrView(context),
-            Positioned(bottom: 50, child: buildResult()),
+            Center(
+              child: buildResult(),
+            ),
             Positioned(bottom: 150, child: buildControlButton()),
           ],
         ),
@@ -80,23 +82,30 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Widget buildResult() {
     if (barcode != null) {
-      return Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+      return AlertDialog(
+        title: const Icon(
+          Icons.warning,
+          color: Colors.red,
+          size: 50,
         ),
-        child: SizedBox(
-          width: double.maxFinite / 2,
-          height: double.maxFinite / 2,
-          child: Column(
-            children: [
-              Text(
-                barcode!.code == "https://boxicons.com/usage"
-                    ? 'Valide'
-                    : 'Invalid',
-              )
-            ],
+        content: Text(
+          barcode!.code == "https://boxicons.com/usage" ? 'Valide' : 'Invalid',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          MaterialButton(
+            color: AppColor.primary,
+            onPressed: () {},
+            child: const Text(
+              'OK',
+              style: TextStyle(fontSize: 15, color: Colors.white),
+            ),
+          ),
+        ],
       );
     } else {
       return const SizedBox();

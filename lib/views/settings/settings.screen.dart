@@ -74,73 +74,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future logout() async {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Icon(
-              Icons.warning,
-              color: Colors.red,
-              size: 50,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Icon(
+            Icons.warning,
+            color: Colors.red,
+            size: 50,
+          ),
+          content: const Text(
+            'Êtes-vous sûr?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
-            content: const Text(
-              'Êtes-vous sûr?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Non',
+                style: TextStyle(fontSize: 15),
               ),
             ),
-            actions: [
-              MaterialButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  'Non',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              MaterialButton(
-                color: AppColor.primary,
-                onPressed: () async {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      });
-                  var response = await http.post(
-                    Uri.parse(
-                        "http://backend.cible-app.com/public/api/controllers/logout"),
-                    headers: ({
-                      'Authorization':
-                          'Bearer ${SharedPreferencesHelper.getToken()}',
-                    }),
-                  );
-                  print(SharedPreferencesHelper.getToken());
-                  // ignore: use_build_context_synchronously
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => const MainScreen()),
-                    (route) => false,
-                  );
+            MaterialButton(
+              color: AppColor.primary,
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    });
+                var response = await http.post(
+                  Uri.parse(
+                      "http://backend.cible-app.com/public/api/controllers/logout"),
+                  headers: ({
+                    'Authorization':
+                        'Bearer ${SharedPreferencesHelper.getToken()}',
+                  }),
+                );
+                print(SharedPreferencesHelper.getToken());
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => const MainScreen()),
+                  (route) => false,
+                );
 
-                  if (response.statusCode == 200) {
-                    print(SharedPreferencesHelper.getToken());
-                  } else {
-                    print("here");
-                    await SharedPreferencesHelper.setToken('');
-                    print(response.body);
-                  }
-                },
-                child: const Text(
-                  'Oui',
-                  style: TextStyle(fontSize: 15, color: Colors.white),
-                ),
+                if (response.statusCode == 200) {
+                  print(SharedPreferencesHelper.getToken());
+                } else {
+                  print("here");
+                  await SharedPreferencesHelper.setToken('');
+                  print(response.body);
+                }
+              },
+              child: const Text(
+                'Oui',
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 }

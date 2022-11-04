@@ -158,9 +158,11 @@ class _CodeScreenState extends State<CodeScreen> {
         isLoading = true;
       });
 
-      var response = await http.get(
-        Uri.parse(
-            "http://backend.cible-app.com/public/api/emailbycode/${_codeController.text}"),
+      var response = await http.post(
+        Uri.parse("http://backend.cible-app.com/public/api/verifycode"),
+        body: ({
+          "code": _codeController.text,
+        }),
       );
 
       setState(() {
