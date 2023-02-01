@@ -25,7 +25,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
   getCategoriesFromAPI() async {
     var response = await http.get(
-      Uri.parse('$baseApiUrl/events/categoriesWithEvents'),
+      Uri.parse('$baseApiUrl/events_of_day'),
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json"
