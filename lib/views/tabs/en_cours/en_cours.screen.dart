@@ -1,67 +1,82 @@
+import 'dart:convert';
+
 import 'package:cible_controlleur/constants/local_path.dart';
 import 'package:cible_controlleur/helpers/colorsHelpers.dart';
 import 'package:cible_controlleur/views/tabs/en_cours/en_cours.widgets.dart';
 import 'package:flutter/material.dart';
 
-class EnCoursScreen extends StatelessWidget {
-  const EnCoursScreen({super.key});
+import '../../../constants/api.dart';
+import '../../../helpers/sharedPreferences.dart';
+
+import '../../../models/categorie.dart';
+
+class EnCoursScreen extends StatefulWidget {
+  EnCoursScreen({required this.categories,Key? key}) : super(key: key);
+  final List<Categorie> categories;
+
+  @override
+  State<EnCoursScreen> createState() => _EnCoursScreenState();
+}
+
+class _EnCoursScreenState extends State<EnCoursScreen> {
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ListView(
-        children: const [
-          Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: Text(
-              'Concerts',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-                color: AppColor.primary,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var categorie in widget.categories) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text(
+                        '${categorie.titre}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.primary,
+                        ),
+                      ),
+                    ),
+                    ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: categorie.events.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyCards(
+                                image: categorie.events[index].image == null
+                                    ? Image.asset(
+                                        '$imagesPath/dadju.jpg',
+                                        height: 130,
+                                        fit: BoxFit.fitHeight,
+                                      )
+                                    : Image.memory(
+                                        height: 130,
+                                        base64Decode(
+                                            categorie.events[index].image),
+                                        fit: BoxFit.cover),
+                                name: '${categorie.events[index].titre}',
+                                lieu:
+                                    '${categorie.events[index].lieux[0].valeur}',
+                                date:
+                                    '${categorie.events[index].lieux[0].dates[0].valeur}',
+                                    eventId: categorie.events[index].id,
+                              ),
+                            ],
+                          );
+                        })
+                  ]
+                ],
               ),
             ),
-          ),
-          MyCards(
-            image: '$imagesPath/dadju.jpg',
-            name: 'Concert de Dadju',
-            lieu: 'Plage face OnomoaefinjgnfajfnUFHPIRUHNRWIGJNgbyguvutgiiu',
-            date: '17 - 09 -2022',
-          ),
-          MyCards(
-            image: '$imagesPath/santrinos.webp',
-            name: 'Concert de Santrinos',
-            lieu:
-                'Miadjoe, Anéhogbygvygfvfhgvyghvubhgiyufgvtfgcyvtfgvtfguvyfvyg',
-            date: '17 - 09 -2022',
-          ),
-          SizedBox(
-            height: 17,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: Text(
-              'Théatre',
-              style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 1, 69, 3)),
-            ),
-          ),
-          MyCards(
-            image: '$imagesPath/dadju.jpg',
-            name: 'Concert de Dadju',
-            lieu: 'Plage face Onomo',
-            date: '17 - 09 -2022',
-          ),
-          MyCards(
-            image: '$imagesPath/santrinos.webp',
-            name: 'Concert de Santrinos',
-            lieu: 'Miadjo, Aného',
-            date: '17 - 09 -2022',
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

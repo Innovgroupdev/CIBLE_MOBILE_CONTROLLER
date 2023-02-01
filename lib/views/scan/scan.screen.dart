@@ -11,6 +11,7 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
+  bool isBuildResult = false;
 
   Barcode? barcode;
   QRViewController? controller;
@@ -39,9 +40,10 @@ class _ScanScreenState extends State<ScanScreen> {
           alignment: Alignment.center,
           children: [
             buildQrView(context),
+            isBuildResult == true || barcode != null?
             Center(
               child: buildResult(),
-            ),
+            ):const SizedBox(),
             Positioned(bottom: 150, child: buildControlButton()),
           ],
         ),
@@ -89,7 +91,7 @@ class _ScanScreenState extends State<ScanScreen> {
           size: 50,
         ),
         content: Text(
-          barcode!.code == "https://boxicons.com/usage" ? 'Valide' : 'Invalid',
+          barcode!.code == "https://boxicons.com/usage" ? 'Code valide' : 'Code non valide',
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 18,
@@ -99,7 +101,13 @@ class _ScanScreenState extends State<ScanScreen> {
         actions: [
           MaterialButton(
             color: AppColor.primary,
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                barcode = null;
+                isBuildResult = false;
+              });
+            //  Navigator.pop(context);
+            },
             child: const Text(
               'OK',
               style: TextStyle(fontSize: 15, color: Colors.white),
