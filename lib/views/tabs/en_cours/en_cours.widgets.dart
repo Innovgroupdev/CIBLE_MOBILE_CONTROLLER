@@ -293,7 +293,7 @@ class MyCards extends StatelessWidget {
                                                                     bool
                                                                         isCodeCorrect =
                                                                         await verifyCode(
-                                                                            _codeController.text /*,eventId*/);
+                                                                            _codeController.text,eventId);
                                                                     setState(
                                                                       () {
                                                                         isLoading =

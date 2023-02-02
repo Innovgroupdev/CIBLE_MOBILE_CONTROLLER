@@ -14,7 +14,7 @@ getCategorieIsCinema(code) {
   return code == 'CINE';
 }
 
-verifyCode(String code/*,int eventId*/) async {
+verifyCode(String code,int eventId) async {
   dynamic deviceId = SharedPreferencesHelper.getDeviceId();
   Map<String, dynamic> data = {
     "code" : code,
@@ -22,7 +22,7 @@ verifyCode(String code/*,int eventId*/) async {
 };
 try{
   var response = await http.post(
-      Uri.parse('$baseApiUrl/events/verifycode'),/* eventId*/
+      Uri.parse('$baseApiUrl/events/verifycode/$eventId'),
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json"
@@ -30,8 +30,35 @@ try{
       body: jsonEncode(data));
        
       var finalData = jsonDecode(response.body) as Map;
- print('Respoooooose'+response.body.toString());
       if(finalData['status'] == "success"){
+        return true;
+      }else{
+        return false;
+      }
+  
+}catch(e){
+print('Erroree $e');
+return false;
+}
+  
+}
+
+Future<bool> verifyCodeQr(String codeInformation,String ticketAccessToken) async {
+  Map<String, dynamic> data = {
+    "code_informations" : codeInformation,
+};
+try{
+  var response = await http.post(
+      Uri.parse('$baseApiUrl/code/validate'),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $ticketAccessToken",
+      },
+      body: jsonEncode(data));
+       
+      var finalData = jsonDecode(response.body) as Map;
+      if(finalData['status'] == "sucess"){
         return true;
       }else{
         return false;

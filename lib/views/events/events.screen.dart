@@ -21,7 +21,7 @@ class EventsScreen extends StatefulWidget {
 
 class _EventsScreenState extends State<EventsScreen> {
 
-  List<Categorie> categories = [];
+  List<Categorie>? categories;
 
   getCategoriesFromAPI() async {
     var response = await http.get(
@@ -92,9 +92,18 @@ class _EventsScreenState extends State<EventsScreen> {
             )
           ],
         ),
-        body: categories.isEmpty
+        body: categories == null
         ? const Center(child: CircularProgressIndicator())
         : 
+        categories!.isEmpty?
+        const Center(child:  Text(
+                        'Pas d\'évènement aujourd\'hui',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.primary,
+                        ),
+                      ),):
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
@@ -120,7 +129,7 @@ class _EventsScreenState extends State<EventsScreen> {
               ),
               Expanded(
                 child: TabBarView(children: [
-                  EnCoursScreen(categories: categories),
+                  EnCoursScreen(categories: categories!),
                   HistoriqueScreen(),
                 ]),
               )
