@@ -56,19 +56,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ),
                     const Text(
-                      'Scanner les tickets des participants',
+                      'Scannez les tickets de vos événements publiés sur CIBLE',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: AppColor.text,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const Text(
-                      'Recrutez des organisateurs et prestataires évènementiels. '
-                      'Trouvez une main d\'oeuvre qualifiée pour vos évènements.',
-                      style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 18,
                         height: 2,
                         color: AppColor.text,
                       ),

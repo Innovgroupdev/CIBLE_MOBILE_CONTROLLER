@@ -10,6 +10,7 @@ import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constants/api.dart';
+import '../../constants/local_path.dart';
 import '../../models/categorie.dart';
 
 class EventsScreen extends StatefulWidget {
@@ -72,7 +73,13 @@ class _EventsScreenState extends State<EventsScreen> {
         appBar: AppBar(
           foregroundColor: AppColor.primary,
           elevation: 0,
-          leading: Icon(Icons.menu_rounded),
+          leading:  Container(
+                      margin: const EdgeInsets.only(left: 10.0),
+                      child: const CircleAvatar(
+                        maxRadius: 80.0,
+                        backgroundImage: AssetImage('$imagesPath/s.jpeg'),
+                      ),
+                    ),
           backgroundColor: Colors.transparent,
           title: const Text(
             'EVENEMENTS',
@@ -88,7 +95,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 // );
                 
               },
-              icon: const Icon(Icons.settings),
+              icon: const Icon(Icons.security,color: AppColor.primary,size: 30,),
             )
           ],
         ),
@@ -96,14 +103,23 @@ class _EventsScreenState extends State<EventsScreen> {
         ? const Center(child: CircularProgressIndicator())
         : 
         categories!.isEmpty?
-        const Center(child:  Text(
-                        'Pas d\'évènement aujourd\'hui',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.primary,
-                        ),
-                      ),):
+        Center(child:  Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:  [
+            SizedBox(
+              height: 350,
+              width: 350,
+                      child: Image.asset('$imagesPath/empty.png'),
+                    ),
+             const Text(
+                            'Pas d\'évènements aujourd\'hui',
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: AppColor.primary,
+                            ),
+                          ),
+          ],
+        ),):
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
