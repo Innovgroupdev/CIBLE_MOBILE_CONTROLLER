@@ -1,4 +1,4 @@
-package com.example.cible_controlleur
+package com.cible.scan
 
 import io.flutter.embedding.android.FlutterActivity
 
