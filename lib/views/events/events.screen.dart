@@ -6,11 +6,13 @@ import 'package:cible_controlleur/views/settings/settings.screen.dart';
 import 'package:cible_controlleur/views/tabs/en_cours/en_cours.screen.dart';
 import 'package:cible_controlleur/views/tabs/historique/historique.screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constants/api.dart';
 import '../../constants/local_path.dart';
+import '../../helpers/countriesJsonHelper.dart';
 import '../../models/categorie.dart';
 
 class EventsScreen extends StatefulWidget {
@@ -23,10 +25,15 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
 
   List<Categorie>? categories;
+  
+  String countryCode = '';
+  String countryLibelle = '';
+  var countryIsSupport;
 
   getCategoriesFromAPI() async {
+            
     var response = await http.get(
-      Uri.parse('$baseApiUrl/events_of_day'),
+      Uri.parse('$baseApiUrl/events_of_day/$countryLibelle'),
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json"
@@ -36,10 +43,35 @@ class _EventsScreenState extends State<EventsScreen> {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
+        countryIsSupport = true;
         categories =
             getCategorieFromMap(jsonDecode(response.body)['data'] as List);
+            
       });
       return categories;
+    }else if (response.statusCode == 500){
+      setState(() {
+        countryIsSupport = false;
+      });
+    }
+  }
+
+   Future getUserLocation() async {
+    var response = await http.get(
+      Uri.parse('https://ipinfo.io/json'),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+    );
+    if (response.statusCode == 200) {
+      // print(object)
+      setState(() {
+        countryCode = jsonDecode(response.body)['country'];
+        countryLibelle =
+            getCountryDialCodeWithCountryCode(countryCode);
+
+      });
     }
   }
 
@@ -55,7 +87,9 @@ class _EventsScreenState extends State<EventsScreen> {
   }
     @override
   void initState() {
-    getCategoriesFromAPI();
+    getUserLocation().then((value) => {
+    getCategoriesFromAPI()
+    });
     super.initState();
   }
 
@@ -99,7 +133,26 @@ class _EventsScreenState extends State<EventsScreen> {
             )
           ],
         ),
-        body: categories == null
+        body: 
+        countryIsSupport != null && !countryIsSupport ?
+                                    Container(
+                                      padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                    child: Center(child: Text(
+                          "Désolé, CIBLE n'est pas disponible dans votre pays pour le moment."
+                          "Nous travaillons à son lancement très bientôt."
+                          "Merci et à très bientôt."
+                          "❤️",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            textStyle: Theme.of(context).textTheme.bodyLarge,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54
+                          ),
+                        ),),
+                                    ):
+        categories == null
         ? const Center(child: CircularProgressIndicator())
         : 
         categories!.isEmpty?
