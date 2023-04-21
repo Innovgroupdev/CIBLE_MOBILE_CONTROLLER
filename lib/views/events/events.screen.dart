@@ -156,22 +156,25 @@ class _EventsScreenState extends State<EventsScreen> {
         ? const Center(child: CircularProgressIndicator())
         : 
         categories!.isEmpty?
-        Center(child:  Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:  [
-            SizedBox(
-              height: 350,
-              width: 350,
-                      child: Image.asset('$imagesPath/empty.png'),
-                    ),
-             const Text(
-                            'Pas d\'évènements aujourd\'hui',
-                            style: TextStyle(
-                              fontSize: 17,
-                              color: AppColor.primary,
+        Center(child:  SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:  [
+              SizedBox(
+                height: 350,
+                width: 350,
+                        child: Image.asset('$imagesPath/empty.png'),
+                      ),
+               const Text(
+                              'Pas d\'évènements aujourd\'hui',
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: AppColor.primary,
+                              ),
                             ),
-                          ),
-          ],
+            ],
+          ),
         ),):
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
