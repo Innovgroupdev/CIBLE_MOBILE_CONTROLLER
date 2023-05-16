@@ -101,7 +101,7 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 1,
       child: Scaffold(
         backgroundColor: Colors.blueGrey[50],
         appBar: AppBar(
@@ -196,13 +196,13 @@ class _EventsScreenState extends State<EventsScreen> {
                 ),
                 tabs: const [
                   Tab(text: 'En cours'),
-                  Tab(text: 'Historique'),
+                  //Tab(text: 'Historique'),
                 ],
               ),
               Expanded(
                 child: TabBarView(children: [
                   EnCoursScreen(categories: categories!),
-                  HistoriqueScreen(),
+                 // HistoriqueScreen(),
                 ]),
               )
             ],

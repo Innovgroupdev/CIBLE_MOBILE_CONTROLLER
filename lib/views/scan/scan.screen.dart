@@ -48,7 +48,8 @@ class _ScanScreenState extends State<ScanScreen> {
           alignment: Alignment.center,
           children: [
             buildQrView(context),
-            isBuildResult == true || barcode != null?
+            //isBuildResult == true || 
+            barcode != null?
             Center(
               child: buildResult(),
             ):const SizedBox(),
@@ -137,7 +138,11 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Widget buildQrView(BuildContext context) => QRView(
         key: qrKey,
-        onQRViewCreated: onQRViewCreated,
+        onQRViewCreated:
+        // isBuildResult == false?
+        onQRViewCreated,
+        //:
+       // ((p0) {print('aaaaaaaaaaaaaaaaaaaaa'+isBuildResult.toString());}),
         overlay: QrScannerOverlayShape(
           borderLength: 10,
           borderRadius: 10,
@@ -150,8 +155,11 @@ class _ScanScreenState extends State<ScanScreen> {
   void onQRViewCreated(QRViewController controller) {
     setState(() => this.controller = controller);
 
+    // isBuildResult == true?
+    // controller.pauseCamera():null;
+
     controller.scannedDataStream.listen((barcodee)async{ 
-      
+      print('aaaaaaaaaaaaaaaaaaaaa'+isBuildResult.toString());
       setState(() {
           
           qrInformation = barcodee.code.toString();
@@ -164,11 +172,34 @@ class _ScanScreenState extends State<ScanScreen> {
         await verifyCodeQr(codeQr!,ticketAccessToken!).then((value) {
           setState(() {
             isQrValide = value;
+            isBuildResult = true;
             this.barcode = barcodee;
           });
         } );
         
         }
+
+
+    // controller.scannedDataStream.listen((barcodee)async{ 
+    //   print('aaaaaaaaaaaaaaaaaaaaa'+isBuildResult.toString());
+    //   setState(() {
+          
+    //       qrInformation = barcodee.code.toString();
+    //       tabQrInformation = qrInformation!.split(' ');
+    //       codeQr = tabQrInformation[0];
+    //       ticketAccessToken = tabQrInformation[1];
+          
+          
+    //     });
+    //     await verifyCodeQr(codeQr!,ticketAccessToken!).then((value) {
+    //       setState(() {
+    //         isQrValide = value;
+    //         isBuildResult = true;
+    //         this.barcode = barcodee;
+    //       });
+    //     } );
+        
+    //     }
         );
   }
 }

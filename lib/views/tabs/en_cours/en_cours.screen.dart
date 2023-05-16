@@ -58,10 +58,9 @@ class _EnCoursScreenState extends State<EnCoursScreen> {
                                         height: 130,
                                         fit: BoxFit.fitHeight,
                                       )
-                                    : Image.memory(
+                                    : Image.network(
+                                      categorie.events[index].image,
                                         height: 130,
-                                        base64Decode(
-                                            categorie.events[index].image),
                                         fit: BoxFit.cover),
                                 name: '${categorie.events[index].titre}',
                                 lieu:
