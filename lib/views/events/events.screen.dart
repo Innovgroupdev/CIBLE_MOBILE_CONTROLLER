@@ -44,9 +44,12 @@ class _EventsScreenState extends State<EventsScreen> {
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
         countryIsSupport = true;
-        categories =
+        if(jsonDecode(response.body)['data'] != null){
+          categories =
             getCategorieFromMap(jsonDecode(response.body)['data'] as List);
-            
+        }else{
+          categories = [];
+        }
       });
       return categories;
     }else if (response.statusCode == 500){
