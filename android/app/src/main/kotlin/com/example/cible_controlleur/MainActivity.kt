@@ -1,4 +1,4 @@
-package com.cible.scan
+package com.cibleapp.scan
 
 import io.flutter.embedding.android.FlutterActivity
 

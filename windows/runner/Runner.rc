@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "com.cibleapp" "\0"
             VALUE "FileDescription", "cible_controlleur" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "cible_controlleur" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2022 com.cibleapp. All rights reserved." "\0"
             VALUE "OriginalFilename", "cible_controlleur.exe" "\0"
             VALUE "ProductName", "cible_controlleur" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
