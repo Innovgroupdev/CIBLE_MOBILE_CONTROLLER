@@ -39,7 +39,7 @@ class _EventsScreenState extends State<EventsScreen> {
         "Content-Type": "application/json"
       },
     );
-    print(response.statusCode);
+    print('lallllllllllllllll'+jsonDecode(response.body).toString());
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
