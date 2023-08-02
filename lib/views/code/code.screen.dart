@@ -31,13 +31,15 @@ class _CodeScreenState extends State<CodeScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
+          child: SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const SizedBox(
+                      height: 110.0,
+                    ),
                     const CircleAvatar(
                       maxRadius: 60.0,
                       backgroundImage: AssetImage('$imagesPath/s.jpeg'),
@@ -100,14 +102,20 @@ class _CodeScreenState extends State<CodeScreen> {
                       width: double.maxFinite,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: checkCode,
-                        // () {
+                        onPressed: 
+                        //checkCode,
+                         () {
+                           Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) {
+            return const ScanScreen();
+            // return InscriptionScreen(email: body['data']);
+          }));
                         //   Navigator.of(context).pushReplacement(
                         //     MaterialPageRoute(builder: (BuildContext context) {
                         //       return const InscriptionScreen();
                         //     }),
                         //   );
-                        // },
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColor.primary,
                           shape: RoundedRectangleBorder(
@@ -124,29 +132,10 @@ class _CodeScreenState extends State<CodeScreen> {
                               ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                            return const ConnexionScreen();
-                          }),
-                        );
-                      },
-                      child: const Text(
-                        'J\'ai déjà un compte',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ),
             ),
-          ),
         ),
       ),
     );

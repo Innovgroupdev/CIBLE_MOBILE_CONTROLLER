@@ -1,19 +1,36 @@
 import 'package:cible_controlleur/helpers/sharedPreferences.dart';
 import 'package:cible_controlleur/providers/user_provider.dart';
+import 'package:cible_controlleur/views/events/events.screen.dart';
 import 'package:cible_controlleur/views/main/main.screen.dart';
+import 'package:cible_controlleur/views/welcome/welcome.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cible_controlleur/core/routes.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesHelper.init();
-  runApp(const MyApp());
+  dynamic deviceId;
+  if(SharedPreferencesHelper.getIsNew() == null){
+  await SharedPreferencesHelper().getDeviceIdFirst().then((value) {
+    deviceId = value;
+  }) ;
+  print('deviceeId '+deviceId );
+    SharedPreferencesHelper.setDeviceId(deviceId);
+  }else{
+    dynamic deviceId = SharedPreferencesHelper.getDeviceId();
+     print('deviceeId '+deviceId );
+  }
+
+  bool? isNew = SharedPreferencesHelper.getIsNew();
+  runApp(MyApp(isNew: isNew,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({required this.isNew, super.key});
+  final bool? isNew;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +49,9 @@ class MyApp extends StatelessWidget {
         // routes: routes,
         // initialRoute: '/',
         // onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings),
-        home: const MainScreen(),
+        home: isNew == null?
+        const WelcomeScreen():
+        const EventsScreen(),
       ),
     );
   }

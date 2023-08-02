@@ -2,6 +2,8 @@ import 'package:cible_controlleur/helpers/colorsHelpers.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../events/eventDetails.controller.dart';
+
 class ScanScreen extends StatefulWidget {
   const ScanScreen({Key? key}) : super(key: key);
 
@@ -11,6 +13,13 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
+  bool isBuildResult = false;
+  bool? isQrValide;
+
+  String? qrInformation;
+          dynamic? tabQrInformation;
+          String? codeQr;
+          String? ticketAccessToken;
 
   Barcode? barcode;
   QRViewController? controller;
@@ -39,9 +48,11 @@ class _ScanScreenState extends State<ScanScreen> {
           alignment: Alignment.center,
           children: [
             buildQrView(context),
+            //isBuildResult == true || 
+            barcode != null?
             Center(
               child: buildResult(),
-            ),
+            ):const SizedBox(),
             Positioned(bottom: 150, child: buildControlButton()),
           ],
         ),
@@ -83,13 +94,20 @@ class _ScanScreenState extends State<ScanScreen> {
   Widget buildResult() {
     if (barcode != null) {
       return AlertDialog(
-        title: const Icon(
+        title: 
+        isQrValide == true ?
+        const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+          size: 50,
+        ):
+        const Icon(
           Icons.warning,
           color: Colors.red,
           size: 50,
         ),
         content: Text(
-          barcode!.code == "https://boxicons.com/usage" ? 'Valide' : 'Invalid',
+          isQrValide == true ? 'Code valide' : 'Code non valide',
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 18,
@@ -99,7 +117,13 @@ class _ScanScreenState extends State<ScanScreen> {
         actions: [
           MaterialButton(
             color: AppColor.primary,
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                barcode = null;
+                isBuildResult = false;
+              });
+            //  Navigator.pop(context);
+            },
             child: const Text(
               'OK',
               style: TextStyle(fontSize: 15, color: Colors.white),
@@ -114,7 +138,11 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Widget buildQrView(BuildContext context) => QRView(
         key: qrKey,
-        onQRViewCreated: onQRViewCreated,
+        onQRViewCreated:
+        // isBuildResult == false?
+        onQRViewCreated,
+        //:
+       // ((p0) {print('aaaaaaaaaaaaaaaaaaaaa'+isBuildResult.toString());}),
         overlay: QrScannerOverlayShape(
           borderLength: 10,
           borderRadius: 10,
@@ -127,8 +155,51 @@ class _ScanScreenState extends State<ScanScreen> {
   void onQRViewCreated(QRViewController controller) {
     setState(() => this.controller = controller);
 
-    controller.scannedDataStream.listen((barcode) => setState(() {
-          this.barcode = barcode;
-        }));
+    // isBuildResult == true?
+    // controller.pauseCamera():null;
+
+    controller.scannedDataStream.listen((barcodee)async{ 
+      print('aaaaaaaaaaaaaaaaaaaaa'+isBuildResult.toString());
+      setState(() {
+          
+          qrInformation = barcodee.code.toString();
+          tabQrInformation = qrInformation!.split(' ');
+          codeQr = tabQrInformation[0];
+          ticketAccessToken = tabQrInformation[1];
+          
+          
+        });
+        await verifyCodeQr(codeQr!,ticketAccessToken!).then((value) {
+          setState(() {
+            isQrValide = value;
+            isBuildResult = true;
+            this.barcode = barcodee;
+          });
+        } );
+        
+        }
+
+
+    // controller.scannedDataStream.listen((barcodee)async{ 
+    //   print('aaaaaaaaaaaaaaaaaaaaa'+isBuildResult.toString());
+    //   setState(() {
+          
+    //       qrInformation = barcodee.code.toString();
+    //       tabQrInformation = qrInformation!.split(' ');
+    //       codeQr = tabQrInformation[0];
+    //       ticketAccessToken = tabQrInformation[1];
+          
+          
+    //     });
+    //     await verifyCodeQr(codeQr!,ticketAccessToken!).then((value) {
+    //       setState(() {
+    //         isQrValide = value;
+    //         isBuildResult = true;
+    //         this.barcode = barcodee;
+    //       });
+    //     } );
+        
+    //     }
+        );
   }
 }
