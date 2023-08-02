@@ -23,15 +23,13 @@ class EventsScreen extends StatefulWidget {
 }
 
 class _EventsScreenState extends State<EventsScreen> {
-
   List<Categorie>? categories;
-  
+
   String countryCode = '';
   String countryLibelle = '';
   var countryIsSupport;
 
   getCategoriesFromAPI() async {
-            
     var response = await http.get(
       Uri.parse('$baseApiUrl/events_of_day/$countryLibelle'),
       headers: {
@@ -39,27 +37,27 @@ class _EventsScreenState extends State<EventsScreen> {
         "Content-Type": "application/json"
       },
     );
-    print('lallllllllllllllll'+jsonDecode(response.body).toString());
+    print('lallllllllllllllll' + jsonDecode(response.body).toString());
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       setState(() {
         countryIsSupport = true;
-        if(jsonDecode(response.body)['data'] != null){
+        if (jsonDecode(response.body)['data'] != null) {
           categories =
-            getCategorieFromMap(jsonDecode(response.body)['data'] as List);
-        }else{
+              getCategorieFromMap(jsonDecode(response.body)['data'] as List);
+        } else {
           categories = [];
         }
       });
       return categories;
-    }else if (response.statusCode == 500){
+    } else if (response.statusCode == 500) {
       setState(() {
         countryIsSupport = false;
       });
     }
   }
 
-   Future getUserLocation() async {
+  Future getUserLocation() async {
     var response = await http.get(
       Uri.parse('https://ipinfo.io/json'),
       headers: {
@@ -71,9 +69,7 @@ class _EventsScreenState extends State<EventsScreen> {
       // print(object)
       setState(() {
         countryCode = jsonDecode(response.body)['country'];
-        countryLibelle =
-            getCountryDialCodeWithCountryCode(countryCode);
-
+        countryLibelle = getCountryDialCodeWithCountryCode(countryCode);
       });
     }
   }
@@ -88,11 +84,10 @@ class _EventsScreenState extends State<EventsScreen> {
     }
     return tagObjs;
   }
-    @override
+
+  @override
   void initState() {
-    getUserLocation().then((value) => {
-    getCategoriesFromAPI()
-    });
+    getUserLocation().then((value) => {getCategoriesFromAPI()});
     super.initState();
   }
 
@@ -110,13 +105,13 @@ class _EventsScreenState extends State<EventsScreen> {
         appBar: AppBar(
           foregroundColor: AppColor.primary,
           elevation: 0,
-          leading:  Container(
-                      margin: const EdgeInsets.only(left: 10.0),
-                      child: const CircleAvatar(
-                        maxRadius: 80.0,
-                        backgroundImage: AssetImage('$imagesPath/s.jpeg'),
-                      ),
-                    ),
+          leading: Container(
+            margin: const EdgeInsets.only(left: 10.0),
+            child: const CircleAvatar(
+              maxRadius: 80.0,
+              backgroundImage: AssetImage('$imagesPath/s.jpeg'),
+            ),
+          ),
           backgroundColor: Colors.transparent,
           title: const Text(
             'EVENEMENTS',
@@ -130,87 +125,91 @@ class _EventsScreenState extends State<EventsScreen> {
                 //     return const SettingsScreen();
                 //   }),
                 // );
-                
               },
-              icon: const Icon(Icons.security,color: AppColor.primary,size: 30,),
+              icon: const Icon(
+                Icons.security,
+                color: AppColor.primary,
+                size: 30,
+              ),
             )
           ],
         ),
-        body: 
-        countryIsSupport != null && !countryIsSupport ?
-                                    Container(
-                                      padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                    child: Center(child: Text(
-                          "Désolé, CIBLE n'est pas disponible dans votre pays pour le moment."
-                          "Nous travaillons à son lancement très bientôt."
-                          "Merci et à très bientôt."
-                          "❤️",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            textStyle: Theme.of(context).textTheme.bodyLarge,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54
-                          ),
-                        ),),
-                                    ):
-        categories == null
-        ? const Center(child: CircularProgressIndicator())
-        : 
-        categories!.isEmpty?
-        Center(child:  SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:  [
-              SizedBox(
-                height: 350,
-                width: 350,
-                        child: Image.asset('$imagesPath/empty.png'),
-                      ),
-               const Text(
-                              'Pas d\'évènements aujourd\'hui',
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: AppColor.primary,
-                              ),
-                            ),
-            ],
-          ),
-        ),):
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              TabBar(
-                padding: const EdgeInsets.only(bottom: 20, top: 20),
-                labelColor: AppColor.primary,
-                unselectedLabelColor: AppColor.secondary,
-                labelStyle: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
+        body: countryIsSupport != null && !countryIsSupport
+            ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Center(
+                  child: Text(
+                    "Désolé, CIBLE n'est pas disponible dans votre pays pour le moment."
+                    "Nous travaillons à son lancement très bientôt."
+                    "Merci et à très bientôt."
+                    "❤️",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                        textStyle: Theme.of(context).textTheme.bodyLarge,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54),
+                  ),
                 ),
-                indicator: DotIndicator(
-                  color: AppColor.primary,
-                  distanceFromCenter: 16,
-                  radius: 5,
-                  paintingStyle: PaintingStyle.fill,
-                ),
-                tabs: const [
-                  Tab(text: 'En cours'),
-                  //Tab(text: 'Historique'),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(children: [
-                  EnCoursScreen(categories: categories!),
-                 // HistoriqueScreen(),
-                ]),
               )
-            ],
-          ),
-        ),
+            : categories == null
+                ? const Center(child: CircularProgressIndicator())
+                : categories!.isEmpty
+                    ? Center(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 350,
+                                width: 350,
+                                child: Image.asset('$imagesPath/empty.png'),
+                              ),
+                              const Text(
+                                'Pas d\'évènements aujourd\'hui',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: AppColor.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          children: [
+                            TabBar(
+                              padding:
+                                  const EdgeInsets.only(bottom: 20, top: 20),
+                              labelColor: AppColor.primary,
+                              unselectedLabelColor: AppColor.secondary,
+                              labelStyle: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              indicator: DotIndicator(
+                                color: AppColor.primary,
+                                distanceFromCenter: 16,
+                                radius: 5,
+                                paintingStyle: PaintingStyle.fill,
+                              ),
+                              tabs: const [
+                                Tab(text: 'En cours'),
+                                //Tab(text: 'Historique'),
+                              ],
+                            ),
+                            Expanded(
+                              child: TabBarView(children: [
+                                EnCoursScreen(categories: categories!),
+                                // HistoriqueScreen(),
+                              ]),
+                            )
+                          ],
+                        ),
+                      ),
       ),
     );
   }

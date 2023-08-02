@@ -346,17 +346,21 @@ class Event1 {
     _roles = roles;
   }
 
+  String newLieu = "";
+  String date = "";
+
   Event1(
       this._categorie,
       this._conditions,
       this._description,
       this._image,
-      this._lieux,
       this._pays,
       this._roles,
       this._tickets,
       this._titre,
-      this._ville);
+      this._ville,
+      this.newLieu,
+      this.date);
 
   getLieuxToMap() {
     List list = [];
@@ -406,162 +410,6 @@ class Event1 {
     return list;
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'titre': titre,
-      'description': description,
-      'categorie': categorie.toMap(),
-      //'categorie': categorie.toMap(),
-      'image': image,
-      'conditions': conditions,
-      'pays': pays,
-      'ville': ville,
-      'lieux': getLieuxToMap(),
-      'tickets': geTicketToMap(),
-      'roles': geRoleToMap(),
-    };
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'titre': titre,
-      'description': description,
-      'categorie': categorie.toMap(),
-      //'categorie': categorie.toMap(),
-      'image': image,
-      'conditions': conditions,
-      'pays': pays,
-      'ville': ville,
-      'lieux': getLieuxToMap(),
-      'tickets': geTicketToMap(),
-      'roles': geRoleToMap(),
-    };
-  }
-
-  Map<String, dynamic> toLocalMap() {
-    return {
-      "id": "$id",
-      "titre": "$titre",
-      "description": "$description",
-      "categorie": "${categorie.toLocalMap()}",
-      "image": "image",
-      "conditions": "$conditions",
-      "pays": "$pays",
-      "ville": "$ville",
-      "lieux": "${getLieuxToLocalMap()}",
-      "tickets": "${geTicketToLocalMap()}",
-      "roles": "${geRoleToLocalMap()}",
-    };
-  }
-
-  factory Event1.fromLocalMap(dynamic map) {
-    var madDecode = json.decode(json.encode(map));
-    List l = [];
-    List l1 = [];
-    List l2 = [];
-    dynamic categorie;
-    l = json.decode(madDecode['lieux']);
-    List<Lieu> lieux = getListLieuFrom(l);
-
-    l1 = json.decode(madDecode['roles']);
-    List<Role> roles = getListRoleFrom(l1);
-
-    l2 = map['tickets'] == null ? [] : json.decode(madDecode['tickets']);
-    //print(l2);
-    List<Ticket> tickets = getListTicketFrom(l2);
-
-    categorie = json.decode(madDecode['categorie']);
-    var event = Event1(
-      //madDecode['id'] ?? 0,
-      Categorie.fromMap(madDecode['categorie']),
-      madDecode['condition'] ?? '',
-      madDecode['desc'] ?? '',
-      madDecode['image'] ?? '',
-      lieux ?? [],
-      madDecode['pays'] ?? '',
-      roles ?? [],
-      tickets ?? [],
-      madDecode['titre'] ?? '',
-      madDecode['ville'] ?? '',
-    );
-    // print('id : ${madDecode['id']}, code : ${madDecode['code']}');
-    event.id = madDecode['id'] ?? '';
-    event.code = madDecode['code'] ?? '';
-    event.created_at = madDecode['created_at'] ?? '';
-    event.updated_at = madDecode['updated_at'] ?? '';
-    event.isActive = int.parse('${madDecode['is_active']}');
-    // event.like = int.parse('${madDecode['likeEvent']}') ?? 0;
-    // event.dislike = int.parse('${madDecode['dislikeEvent']}') ?? 0;
-    return event;
-  }
-
-  Map<String, dynamic> toAPIMap() {
-    return {
-      'titre': titre,
-      'desc': description,
-      'categorie_id': 1,
-      'image': image,
-      'condition': conditions,
-      'siteInfo': jsonEncode(getLieuxToMap()),
-      'dateevent': jsonEncode(getLieuxToMap()),
-      'tickets': jsonEncode(geTicketToMap()),
-      'roleActeur': jsonEncode(geRoleToMap()),
-      'is_active': isActive,
-      'pays': pays,
-      'ville': ville,
-    };
-  }
-
-  DateTime getEventFirstDate() {
-    if (categorie.code.isNotEmpty) {
-      if (getCategorieIsMultiple(categorie.code)) {
-        return getCreneauxDateFirst();
-      } else {
-        return getSimpleFirstDate();
-      }
-    }
-
-    return getSimpleFirstDate();
-  }
-
-  getCreneauxDateFirst() {
-    var first;
-    var temp;
-    for (var i = 0; i < lieux.length; i++) {
-      for (var j = 0; j < lieux[i].creneauDates.length; j++) {
-        var temp = DateConvertisseur()
-            .convertirStringtoDateTime(lieux[i].creneauDates[j].dateDebut);
-        if (first != null) {
-          if (!DateConvertisseur().compareDates(temp, first)) {
-            first = temp;
-          }
-        } else {
-          first = temp;
-        }
-      }
-    }
-    return first;
-  }
-
-  getSimpleFirstDate() {
-    var first;
-    var temp;
-    for (var i = 0; i < lieux.length; i++) {
-      for (var j = 0; j < lieux[i].dates.length; j++) {
-        var temp = DateConvertisseur()
-            .convertirStringtoDateTime(lieux[i].dates[j].valeur);
-        if (first != null) {
-          if (!DateConvertisseur().compareDates(temp, first)) {
-            first = temp;
-          }
-        } else {
-          first = temp;
-        }
-      }
-    }
-    return first;
-  }
-
   factory Event1.fromMap(dynamic map) {
     var madDecode = json.decode(json.encode(map));
     List l = [];
@@ -580,7 +428,7 @@ class Event1 {
     //     .map((model) => Lieu.fromMap(model))
     //     .toList();
     // print(json.decode(madDecode['siteInfo']));
-    l = madDecode['siteInfo'];
+    // l = madDecode['siteInfo'];
     List<Lieu> lieux = getListLieuFrom(l);
     // print(lieux);
     // List<Lieu> lieux = l.map((model) => Lieu.fromMap(model)).toList();
@@ -588,7 +436,7 @@ class Event1 {
     // List l1 = json.decode(madDecode['roleActeur']) as List;
     // List<Role> roles = l1.map((model) => Role.fromMap(model)).toList();
 
-    l1 = madDecode['roleActeur'];
+    l1 = madDecode['roleActeur'] ?? [];
     List<Role> roles = getListRoleFrom(l1);
     // print(roles);
 
@@ -611,66 +459,26 @@ class Event1 {
       madDecode['condition'] ?? '',
       madDecode['desc'] ?? '',
       madDecode['image'] ?? '',
-      lieux ?? [],
       madDecode['pays'] ?? '',
       roles ?? [],
       tickets ?? [],
-      madDecode['titre'] ?? '',
+      madDecode['titre'] ?? madDecode['title'] ?? '',
       madDecode['ville'] ?? '',
+      madDecode['lieu'] ?? '',
+      madDecode['date'] ?? '',
     );
     //print('id : ${madDecode['id']}, code : ${madDecode['code']}');
     event.id = madDecode['id'] ?? '';
     event.code = madDecode['code'] ?? '';
     event.created_at = madDecode['created_at'] ?? '';
     event.updated_at = madDecode['updated_at'] ?? '';
-    event.isActive = int.parse('${madDecode['is_active']}');
+    event.isActive = int.parse('${madDecode['is_active'] ?? 0}');
     event.favoris =
         madDecode['favoris'] != null ? int.parse(madDecode['favoris']) : 0;
     event.share =
         madDecode['nb_share'] != null ? int.parse(madDecode['nb_share']) : 0;
     // event.like = int.parse('${madDecode['likeEvent']}') ?? 0;
     // event.dislike = int.parse('${madDecode['dislikeEvent']}') ?? 0;
-    return event;
-  }
-
-  factory Event1.fromJson(dynamic map) {
-    var madDecode = json.decode(json.encode(map));
-    List l = [];
-    List l1 = [];
-    List l2 = [];
-    l = madDecode['siteInfo'] != null ? json.decode(madDecode['siteInfo']) : [];
-    List<Lieu> lieux = getListLieuFrom(l);
-    l1 = madDecode['roleActeur'] != null
-        ? json.decode(madDecode['roleActeur'])
-        : [];
-    List<Role> roles = getListRoleFrom(l1);
-
-    l2 = madDecode['tickets'] == null ? [] : madDecode['tickets'];
-    //print(l2);
-    List<Ticket> tickets = getListTicketFrom(l2);
-
-    var event = Event1(
-      //madDecode['id'] ?? 0,
-      Categorie.fromMap(madDecode['categorie']),
-      madDecode['condition'] ?? '',
-      madDecode['description'] ?? '',
-      madDecode['image'] ?? '',
-      lieux ?? [],
-      madDecode['pays'] ?? '',
-      roles ?? [],
-      tickets ?? [],
-      madDecode['titre'] ?? '',
-      madDecode['ville'] ?? '',
-    );
-    event.id = madDecode['id'] != null ? madDecode['id'] : 0;
-    event.code = madDecode['code'] != null ? madDecode['code'] : '';
-    event.created_at = madDecode['created_at'] ?? '';
-    event.updated_at = madDecode['updated_at'] ?? '';
-    event.isActive =
-        madDecode['is_active'] != null ? madDecode['is_active'] : 0;
-    event.favoris =
-        madDecode['favoris'] != null ? int.parse(madDecode['favoris']) : 0;
-
     return event;
   }
 
